@@ -1,11 +1,50 @@
-<div align="center">
+# NetGuard AI Config Review Platform
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+An enterprise-grade DevSecOps auditing system that compares network configuration differences, parses security exposures, issues compliance verdicts using Google Gemini models, and streamlines reviewer approval workflows.
 
-  <h1>Built with AI Studio</h2>
+## Core Capabilities
+- **Line-by-Line Differentials**: Computes strict Largest Common Subsequence (LCS) matrix edits for Router/Firewall configurations.
+- **Cognitive Security Agent**: Employs Google Gemini models to detect wide exposures (`permit ip any any`), unencrypted transport protocols (`telnet`), default route takeovers, and weak password configurations.
+- **Deterministic Risk Scoring**: Generates quantitative risk numbers based on standardized network threat modifiers.
+- **Review Workflow Hub**: Maintains persistent audit logs, change request assignments, status controls, and reviewer checksheets.
+- **Compliance Export**: High-fidelity automated Markdown compliance report downloads.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## Tech Stack
+- **Frontend**: React 19, Tailwind CSS, Lucide Icons, Frame Motion.
+- **Backend**: Node.js, Express, tsx Server.
+- **AI Core**: Google GenAI SDK (with model fallback mechanisms).
+- **Database**: Simulated Local JSON File Database (`data/reviews.json`).
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+## Architecture
+```
++-----------------------------------------------------------+
+|                     React Client UI                       |
+|   (Dashboard, History, Settings, Interactive Checklists)  |
++---------------------------------------------+-------------+
+                                              | (HTTP API)
+                                              v
++-----------------------------------------------------------+
+|                     Express Backend                       |
+|   (LCS Engine, JSON File DB, AI Prompt Synthesizer)       |
++---------------------------------------------+-------------+
+                                              | (Server-side SDK)
+                                              v
++-----------------------------------------------------------+
+|                     Google Gemini API                     |
+|          ('gemini-3.5-flash' LLM Evaluation)              |
++-----------------------------------------------------------+
+```
 
-</div>
+## Running the Application
+### 1. Configure the API Key
+Declare the standard environment variable in your secret panel:
+```env
+GEMINI_API_KEY=your_actual_api_key_here
+```
+
+### 2. Live Run
+```bash
+npm install
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) inside your web browser.

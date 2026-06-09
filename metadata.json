@@ -1,0 +1,8 @@
+{
+  "name": "NetGuard AI Config Review Platform",
+  "description": "Enterprise security and risk evaluation system for Cisco, Juniper, Fortinet, and Palo Alto network configurations using Gemini automated review agents.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

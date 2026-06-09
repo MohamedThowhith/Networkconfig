@@ -1,0 +1,1664 @@
+[
+  {
+    "id": "REV-2026-0001",
+    "changeRequestId": "CHG-9041",
+    "deviceType": "Cisco IOS",
+    "environment": "Production",
+    "reviewer": "Sarah Connor (SecOps Lead)",
+    "status": "Needs Changes",
+    "overallRisk": "Critical",
+    "riskScore": 9,
+    "oldConfig": "! Baseline Cisco IOS Config\nhostname Core-Switch-Prod\ninterface GigabitEthernet0/1\n ip address 10.0.1.1 255.255.255.0\n!",
+    "newConfig": "! Proposed Cisco IOS Config\nhostname Core-Switch-Prod\ninterface GigabitEthernet0/1\n ip address 10.0.1.1 255.255.255.0\n!\nline vty 0 4\n transport input telnet ssh\n!",
+    "diff": [
+      {
+        "type": "unchanged",
+        "value": "! Baseline Cisco IOS Config",
+        "oldLineNumber": 1,
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "hostname Core-Switch-Prod",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "unchanged",
+        "value": "interface GigabitEthernet0/1",
+        "oldLineNumber": 3,
+        "newLineNumber": 3
+      },
+      {
+        "type": "unchanged",
+        "value": " ip address 10.0.1.1 255.255.255.0",
+        "oldLineNumber": 4,
+        "newLineNumber": 4
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 5,
+        "newLineNumber": 5
+      },
+      {
+        "type": "added",
+        "value": "line vty 0 4",
+        "newLineNumber": 6
+      },
+      {
+        "type": "added",
+        "value": " transport input telnet ssh",
+        "newLineNumber": 7
+      },
+      {
+        "type": "added",
+        "value": "!",
+        "newLineNumber": 8
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "A critical vulnerability was introduced in the core switch lines module. The proposed configuration re-enables unencrypted Telnet access, which exposes management frames to sniffing.",
+      "technicalSummary": "Line config update re-enables telnet as an accepted transportation protocol on VTY terminals 0 through 4 (transport input telnet ssh). This violates NIST and internal security policies.",
+      "overallRisk": "Critical",
+      "approvalRecommendation": "Needs Changes",
+      "securityImpact": "Critical: Management credentials transmitted over the cleartext Telnet protocol can be captured by local attackers.",
+      "availabilityImpact": "Low: Does not alter interface forwarding speeds or static routings.",
+      "complianceImpact": "High: Violates PCI-DSS Requirement 2.2.4 (disable all insecure services) and SOC2 Access Controls.",
+      "affectedServices": [
+        "VTY Management Interface",
+        "Remote Administration"
+      ],
+      "changes": [
+        {
+          "title": "Cleartext Management Access (Telnet) Enabled",
+          "category": "Authentication",
+          "description": "transport input changed from standard SSH to both telnet and ssh.",
+          "riskLevel": "Critical",
+          "businessImpact": "Compromised administrative credentials leading to full switch hijacking.",
+          "technicalImpact": "Allows cleartext TCP port 23 traffic on management virtual lines.",
+          "recommendedAction": "Enforce 'transport input ssh' exclusively."
+        }
+      ],
+      "reviewerChecklist": [
+        "Roll back line vty configuration to SSH-only transport",
+        "Perform a compliance validation scan on remote terminal interfaces"
+      ],
+      "questionsForChangeOwner": [
+        "Why is Telnet access required for this Core switch? Is there legacy testing equipment on site?"
+      ],
+      "finalDecisionRationale": "Re-enabling cleartext authentication protocol creates high severity security risk. Immediate remediation required."
+    },
+    "checklist": [
+      {
+        "item": "Roll back line vty configuration to SSH-only transport",
+        "checked": false
+      },
+      {
+        "item": "Perform a compliance validation scan on remote terminal interfaces",
+        "checked": false
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-08T09:15:22.000Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Automatic Gemini cognitive review finalized. Overall risk labeled Critical."
+      },
+      {
+        "timestamp": "2026-06-08T10:02:11.000Z",
+        "action": "STATUS_CHANGED",
+        "details": "Status updated from Pending to Needs Changes by Sarah Connor."
+      }
+    ],
+    "createdAt": "2026-06-08T09:12:00.000Z",
+    "updatedAt": "2026-06-08T10:02:11.000Z"
+  },
+  {
+    "id": "REV-2026-0002",
+    "changeRequestId": "CHG-3200",
+    "deviceType": "Juniper",
+    "environment": "Staging",
+    "reviewer": "David Miller (Principal Architect)",
+    "status": "Approved",
+    "overallRisk": "Low",
+    "riskScore": 1,
+    "oldConfig": "interfaces {\n  ge-0/0/0 {\n    description \"Uplink - Staging Link\";\n  }\n}",
+    "newConfig": "interfaces {\n  ge-0/0/0 {\n    description \"Uplink - Primary Staging Gigabit\";\n    speed 1g;\n    link-mode full-duplex;\n  }\n}",
+    "diff": [
+      {
+        "type": "unchanged",
+        "value": "interfaces {",
+        "oldLineNumber": 1,
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "  ge-0/0/0 {",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "removed",
+        "value": "    description \"Uplink - Staging Link\";",
+        "oldLineNumber": 3
+      },
+      {
+        "type": "added",
+        "value": "    description \"Uplink - Primary Staging Gigabit\";",
+        "newLineNumber": 3
+      },
+      {
+        "type": "added",
+        "value": "    speed 1g;",
+        "newLineNumber": 4
+      },
+      {
+        "type": "added",
+        "value": "    link-mode full-duplex;",
+        "newLineNumber": 5
+      },
+      {
+        "type": "unchanged",
+        "value": "  }",
+        "oldLineNumber": 4,
+        "newLineNumber": 6
+      },
+      {
+        "type": "unchanged",
+        "value": "}",
+        "oldLineNumber": 5,
+        "newLineNumber": 7
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "Standard physical interface parameters configuration. Explicitly settings port speed and duplex mode reduces auto-negotiation drift risks.",
+      "technicalSummary": "Interface ge-0/0/0 updated with descriptive identification and explicit Gigabit Ethernet transmission standard specifications (1g, full duplex). No ACL, firewall or static route changes.",
+      "overallRisk": "Low",
+      "approvalRecommendation": "Approve",
+      "securityImpact": "Minimal: No authentication or access boundaries are modified.",
+      "availabilityImpact": "High Positive: Mitigates speed duplex auto-negotiation flapping.",
+      "complianceImpact": "Compliant: Adheres to data tier configuration standardization templates.",
+      "affectedServices": [
+        "Staging Uplink Port"
+      ],
+      "changes": [
+        {
+          "title": "Hardware Transmission Parameters Set Explicitly",
+          "category": "Interface",
+          "description": "Port speed locked at 1g and mode set to full-duplex.",
+          "riskLevel": "Low",
+          "businessImpact": "More stable link connections for staging test environments.",
+          "technicalImpact": "Disables auto-negotiation, protecting the interface against interface flapping.",
+          "recommendedAction": "Verify that the connected remote switch port is also locked to matching speed/duplex."
+        }
+      ],
+      "reviewerChecklist": [
+        "Verify remote fiber switch transceiver matches 1g settings"
+      ],
+      "questionsForChangeOwner": [],
+      "finalDecisionRationale": "Standard operational parameters update with positive technical outcome. Approved without reservations."
+    },
+    "checklist": [
+      {
+        "item": "Verify remote fiber switch transceiver matches 1g settings",
+        "checked": true
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-09T03:00:10.000Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Automatic analysis completed. Threat score computed: 15 (Low Risk)"
+      },
+      {
+        "timestamp": "2026-06-09T03:05:00.000Z",
+        "action": "STATUS_CHANGED",
+        "details": "Status changed to Approved by David Miller."
+      }
+    ],
+    "createdAt": "2026-06-09T02:59:00.000Z",
+    "updatedAt": "2026-06-09T03:05:00.000Z"
+  },
+  {
+    "id": "REV-2026-0003",
+    "changeRequestId": "CHG-2026-9041",
+    "deviceType": "Cisco IOS",
+    "environment": "Production",
+    "reviewer": "Security Operations Hub",
+    "status": "Pending",
+    "overallRisk": "Critical",
+    "riskScore": 6,
+    "oldConfig": "hostname BRANCH-RTR-01\n!\ninterface GigabitEthernet0/0\n description WAN Link to ISP\n ip address 203.0.113.10 255.255.255.252\n no shutdown\n!\ninterface GigabitEthernet0/1\n description LAN Network\n ip address 192.168.10.1 255.255.255.0\n no shutdown\n!\nrouter ospf 10\n network 192.168.10.0 0.0.0.255 area 0\n network 203.0.113.8 0.0.0.3 area 0\n!\nip route 0.0.0.0 0.0.0.0 203.0.113.9\n!\naccess-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 443\naccess-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 80\naccess-list 101 deny ip any any log\n!\nline vty 0 4\n login local\n transport input ssh\n!\nusername admin privilege 15 secret OldStrongPassword123\n!\nntp server 192.168.10.20\nlogging host 192.168.10.30\n",
+    "newConfig": "hostname BRANCH-RTR-01\n!\ninterface GigabitEthernet0/0\n description WAN Link to ISP\n ip address 203.0.113.10 255.255.255.252\n no shutdown\n!\ninterface GigabitEthernet0/1\n description LAN Network\n ip address 192.168.20.1 255.255.255.0\n no shutdown\n!\ninterface GigabitEthernet0/2\n description Guest WiFi Network\n ip address 10.10.50.1 255.255.255.0\n no shutdown\n!\nrouter ospf 10\n network 192.168.20.0 0.0.0.255 area 0\n network 203.0.113.8 0.0.0.3 area 0\n network 10.10.50.0 0.0.0.255 area 0\n!\nip route 0.0.0.0 0.0.0.0 203.0.113.9\nip route 10.100.0.0 255.255.0.0 203.0.113.14\n!\naccess-list 101 permit tcp 192.168.20.0 0.0.0.255 any eq 443\naccess-list 101 permit ip any any\n!\nline vty 0 4\n login local\n transport input ssh telnet\n!\nusername admin privilege 15 secret NewWeakPassword\n!\nntp server 198.51.100.50\nlogging host 192.168.10.30\n",
+    "diff": [
+      {
+        "type": "unchanged",
+        "value": "hostname BRANCH-RTR-01",
+        "oldLineNumber": 1,
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "unchanged",
+        "value": "interface GigabitEthernet0/0",
+        "oldLineNumber": 3,
+        "newLineNumber": 3
+      },
+      {
+        "type": "unchanged",
+        "value": " description WAN Link to ISP",
+        "oldLineNumber": 4,
+        "newLineNumber": 4
+      },
+      {
+        "type": "unchanged",
+        "value": " ip address 203.0.113.10 255.255.255.252",
+        "oldLineNumber": 5,
+        "newLineNumber": 5
+      },
+      {
+        "type": "unchanged",
+        "value": " no shutdown",
+        "oldLineNumber": 6,
+        "newLineNumber": 6
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 7,
+        "newLineNumber": 7
+      },
+      {
+        "type": "unchanged",
+        "value": "interface GigabitEthernet0/1",
+        "oldLineNumber": 8,
+        "newLineNumber": 8
+      },
+      {
+        "type": "unchanged",
+        "value": " description LAN Network",
+        "oldLineNumber": 9,
+        "newLineNumber": 9
+      },
+      {
+        "type": "removed",
+        "value": " ip address 192.168.10.1 255.255.255.0",
+        "oldLineNumber": 10
+      },
+      {
+        "type": "added",
+        "value": " ip address 192.168.20.1 255.255.255.0",
+        "newLineNumber": 10
+      },
+      {
+        "type": "added",
+        "value": " no shutdown",
+        "newLineNumber": 11
+      },
+      {
+        "type": "added",
+        "value": "!",
+        "newLineNumber": 12
+      },
+      {
+        "type": "added",
+        "value": "interface GigabitEthernet0/2",
+        "newLineNumber": 13
+      },
+      {
+        "type": "added",
+        "value": " description Guest WiFi Network",
+        "newLineNumber": 14
+      },
+      {
+        "type": "added",
+        "value": " ip address 10.10.50.1 255.255.255.0",
+        "newLineNumber": 15
+      },
+      {
+        "type": "unchanged",
+        "value": " no shutdown",
+        "oldLineNumber": 11,
+        "newLineNumber": 16
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 12,
+        "newLineNumber": 17
+      },
+      {
+        "type": "unchanged",
+        "value": "router ospf 10",
+        "oldLineNumber": 13,
+        "newLineNumber": 18
+      },
+      {
+        "type": "removed",
+        "value": " network 192.168.10.0 0.0.0.255 area 0",
+        "oldLineNumber": 14
+      },
+      {
+        "type": "added",
+        "value": " network 192.168.20.0 0.0.0.255 area 0",
+        "newLineNumber": 19
+      },
+      {
+        "type": "unchanged",
+        "value": " network 203.0.113.8 0.0.0.3 area 0",
+        "oldLineNumber": 15,
+        "newLineNumber": 20
+      },
+      {
+        "type": "added",
+        "value": " network 10.10.50.0 0.0.0.255 area 0",
+        "newLineNumber": 21
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 16,
+        "newLineNumber": 22
+      },
+      {
+        "type": "unchanged",
+        "value": "ip route 0.0.0.0 0.0.0.0 203.0.113.9",
+        "oldLineNumber": 17,
+        "newLineNumber": 23
+      },
+      {
+        "type": "added",
+        "value": "ip route 10.100.0.0 255.255.0.0 203.0.113.14",
+        "newLineNumber": 24
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 18,
+        "newLineNumber": 25
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 443",
+        "oldLineNumber": 19
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 80",
+        "oldLineNumber": 20
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 deny ip any any log",
+        "oldLineNumber": 21
+      },
+      {
+        "type": "added",
+        "value": "access-list 101 permit tcp 192.168.20.0 0.0.0.255 any eq 443",
+        "newLineNumber": 26
+      },
+      {
+        "type": "added",
+        "value": "access-list 101 permit ip any any",
+        "newLineNumber": 27
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 22,
+        "newLineNumber": 28
+      },
+      {
+        "type": "unchanged",
+        "value": "line vty 0 4",
+        "oldLineNumber": 23,
+        "newLineNumber": 29
+      },
+      {
+        "type": "unchanged",
+        "value": " login local",
+        "oldLineNumber": 24,
+        "newLineNumber": 30
+      },
+      {
+        "type": "removed",
+        "value": " transport input ssh",
+        "oldLineNumber": 25
+      },
+      {
+        "type": "added",
+        "value": " transport input ssh telnet",
+        "newLineNumber": 31
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 26,
+        "newLineNumber": 32
+      },
+      {
+        "type": "removed",
+        "value": "username admin privilege 15 secret OldStrongPassword123",
+        "oldLineNumber": 27
+      },
+      {
+        "type": "added",
+        "value": "username admin privilege 15 secret NewWeakPassword",
+        "newLineNumber": 33
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 28,
+        "newLineNumber": 34
+      },
+      {
+        "type": "removed",
+        "value": "ntp server 192.168.10.20",
+        "oldLineNumber": 29
+      },
+      {
+        "type": "added",
+        "value": "ntp server 198.51.100.50",
+        "newLineNumber": 35
+      },
+      {
+        "type": "unchanged",
+        "value": "logging host 192.168.10.30",
+        "oldLineNumber": 30,
+        "newLineNumber": 36
+      },
+      {
+        "type": "unchanged",
+        "value": "",
+        "oldLineNumber": 31,
+        "newLineNumber": 37
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "The proposed configuration introduces significant security regressions, including the removal of restrictive access control lists, the enablement of insecure management protocols, and the weakening of administrative credentials. These changes expose the network to unauthorized traffic and credential interception.",
+      "technicalSummary": "The configuration replaces a restrictive ACL (101) with an 'any-to-any' permit statement, effectively disabling perimeter filtering. It adds a static route to an external gateway (203.0.113.14), modifies VTY lines to allow Telnet, and downgrades the administrative password complexity.",
+      "overallRisk": "Critical",
+      "approvalRecommendation": "Reject",
+      "securityImpact": "The removal of the 'deny ip any any log' statement and the addition of 'permit ip any any' creates a massive security hole, allowing unrestricted traffic flow. Enabling Telnet exposes administrative credentials to cleartext sniffing.",
+      "availabilityImpact": "The change in LAN IP addressing (192.168.10.x to 192.168.20.x) will cause immediate loss of connectivity for all existing LAN devices unless a coordinated migration is performed.",
+      "complianceImpact": "Violates PCI-DSS (Requirement 8.2.1 - strong passwords) and SOC2 (Access Control and Network Security principles) due to cleartext management and lack of traffic filtering.",
+      "affectedServices": [
+        "LAN Connectivity",
+        "Management Access",
+        "Perimeter Firewalling"
+      ],
+      "changes": [
+        {
+          "title": "ACL Policy Weakening",
+          "category": "ACL",
+          "description": "Replaced specific permit/deny rules with 'permit ip any any'.",
+          "riskLevel": "Critical",
+          "businessImpact": "Full exposure of internal network to external threats.",
+          "technicalImpact": "Bypasses all existing traffic filtering policies.",
+          "recommendedAction": "Revert to specific permit rules and maintain an explicit deny-all log statement."
+        },
+        {
+          "title": "Insecure Management Protocol",
+          "category": "Authentication",
+          "description": "Added 'telnet' to transport input.",
+          "riskLevel": "High",
+          "businessImpact": "Risk of credential theft via packet sniffing.",
+          "technicalImpact": "Management traffic is no longer encrypted.",
+          "recommendedAction": "Remove 'telnet' and enforce 'transport input ssh'."
+        },
+        {
+          "title": "Credential Weakening",
+          "category": "Authentication",
+          "description": "Changed admin password to a weaker secret.",
+          "riskLevel": "High",
+          "businessImpact": "Increased susceptibility to brute-force attacks.",
+          "technicalImpact": "Reduced entropy in administrative authentication.",
+          "recommendedAction": "Use a strong, complex password or transition to AAA/TACACS+."
+        }
+      ],
+      "reviewerChecklist": [
+        "Verify that the ACL 101 contains explicit permit rules for required services only.",
+        "Confirm that Telnet is disabled and SSH is the only allowed management protocol.",
+        "Validate that the new LAN IP scheme is compatible with existing DHCP and static assignments.",
+        "Ensure the new static route does not create an asymmetric routing loop."
+      ],
+      "questionsForChangeOwner": [
+        "Why was the 'permit ip any any' rule added to the ACL?",
+        "Is there a specific business requirement for enabling Telnet over SSH?",
+        "What is the justification for downgrading the administrative password complexity?"
+      ],
+      "finalDecisionRationale": "The configuration change introduces multiple critical security vulnerabilities that violate standard hardening practices and compliance requirements. The combination of unrestricted traffic flow and cleartext management protocols poses an unacceptable risk to the production environment."
+    },
+    "checklist": [
+      {
+        "item": "Verify that the ACL 101 contains explicit permit rules for required services only.",
+        "checked": false
+      },
+      {
+        "item": "Confirm that Telnet is disabled and SSH is the only allowed management protocol.",
+        "checked": false
+      },
+      {
+        "item": "Validate that the new LAN IP scheme is compatible with existing DHCP and static assignments.",
+        "checked": false
+      },
+      {
+        "item": "Ensure the new static route does not create an asymmetric routing loop.",
+        "checked": false
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-09T08:45:01.268Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Baseline comparison ran successfully. Identified policy risks, score set at 60 (Critical). Gemini active model validated."
+      }
+    ],
+    "createdAt": "2026-06-09T08:45:01.268Z",
+    "updatedAt": "2026-06-09T08:45:01.268Z"
+  },
+  {
+    "id": "REV-2026-0004",
+    "changeRequestId": "CHG-2026-9041",
+    "deviceType": "Cisco IOS",
+    "environment": "Production",
+    "reviewer": "Security Operations Hub",
+    "status": "Pending",
+    "overallRisk": "Critical",
+    "riskScore": 6,
+    "oldConfig": "hostname BRANCH-RTR-01\n!\ninterface GigabitEthernet0/0\n description WAN Link to ISP\n ip address 203.0.113.10 255.255.255.252\n no shutdown\n!\ninterface GigabitEthernet0/1\n description LAN Network\n ip address 192.168.10.1 255.255.255.0\n no shutdown\n!\nrouter ospf 10\n network 192.168.10.0 0.0.0.255 area 0\n network 203.0.113.8 0.0.0.3 area 0\n!\nip route 0.0.0.0 0.0.0.0 203.0.113.9\n!\naccess-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 443\naccess-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 80\naccess-list 101 deny ip any any log\n!\nline vty 0 4\n login local\n transport input ssh\n!\nusername admin privilege 15 secret OldStrongPassword123\n!\nntp server 192.168.10.20\nlogging host 192.168.10.30\n",
+    "newConfig": "hostname BRANCH-RTR-01\n!\ninterface GigabitEthernet0/0\n description WAN Link to ISP\n ip address 203.0.113.10 255.255.255.252\n no shutdown\n!\ninterface GigabitEthernet0/1\n description LAN Network\n ip address 192.168.20.1 255.255.255.0\n no shutdown\n!\ninterface GigabitEthernet0/2\n description Guest WiFi Network\n ip address 10.10.50.1 255.255.255.0\n no shutdown\n!\nrouter ospf 10\n network 192.168.20.0 0.0.0.255 area 0\n network 203.0.113.8 0.0.0.3 area 0\n network 10.10.50.0 0.0.0.255 area 0\n!\nip route 0.0.0.0 0.0.0.0 203.0.113.9\nip route 10.100.0.0 255.255.0.0 203.0.113.14\n!\naccess-list 101 permit tcp 192.168.20.0 0.0.0.255 any eq 443\naccess-list 101 permit ip any any\n!\nline vty 0 4\n login local\n transport input ssh telnet\n!\nusername admin privilege 15 secret NewWeakPassword\n!\nntp server 198.51.100.50\nlogging host 192.168.10.30\n",
+    "diff": [
+      {
+        "type": "unchanged",
+        "value": "hostname BRANCH-RTR-01",
+        "oldLineNumber": 1,
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "unchanged",
+        "value": "interface GigabitEthernet0/0",
+        "oldLineNumber": 3,
+        "newLineNumber": 3
+      },
+      {
+        "type": "unchanged",
+        "value": " description WAN Link to ISP",
+        "oldLineNumber": 4,
+        "newLineNumber": 4
+      },
+      {
+        "type": "unchanged",
+        "value": " ip address 203.0.113.10 255.255.255.252",
+        "oldLineNumber": 5,
+        "newLineNumber": 5
+      },
+      {
+        "type": "unchanged",
+        "value": " no shutdown",
+        "oldLineNumber": 6,
+        "newLineNumber": 6
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 7,
+        "newLineNumber": 7
+      },
+      {
+        "type": "unchanged",
+        "value": "interface GigabitEthernet0/1",
+        "oldLineNumber": 8,
+        "newLineNumber": 8
+      },
+      {
+        "type": "unchanged",
+        "value": " description LAN Network",
+        "oldLineNumber": 9,
+        "newLineNumber": 9
+      },
+      {
+        "type": "removed",
+        "value": " ip address 192.168.10.1 255.255.255.0",
+        "oldLineNumber": 10
+      },
+      {
+        "type": "added",
+        "value": " ip address 192.168.20.1 255.255.255.0",
+        "newLineNumber": 10
+      },
+      {
+        "type": "added",
+        "value": " no shutdown",
+        "newLineNumber": 11
+      },
+      {
+        "type": "added",
+        "value": "!",
+        "newLineNumber": 12
+      },
+      {
+        "type": "added",
+        "value": "interface GigabitEthernet0/2",
+        "newLineNumber": 13
+      },
+      {
+        "type": "added",
+        "value": " description Guest WiFi Network",
+        "newLineNumber": 14
+      },
+      {
+        "type": "added",
+        "value": " ip address 10.10.50.1 255.255.255.0",
+        "newLineNumber": 15
+      },
+      {
+        "type": "unchanged",
+        "value": " no shutdown",
+        "oldLineNumber": 11,
+        "newLineNumber": 16
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 12,
+        "newLineNumber": 17
+      },
+      {
+        "type": "unchanged",
+        "value": "router ospf 10",
+        "oldLineNumber": 13,
+        "newLineNumber": 18
+      },
+      {
+        "type": "removed",
+        "value": " network 192.168.10.0 0.0.0.255 area 0",
+        "oldLineNumber": 14
+      },
+      {
+        "type": "added",
+        "value": " network 192.168.20.0 0.0.0.255 area 0",
+        "newLineNumber": 19
+      },
+      {
+        "type": "unchanged",
+        "value": " network 203.0.113.8 0.0.0.3 area 0",
+        "oldLineNumber": 15,
+        "newLineNumber": 20
+      },
+      {
+        "type": "added",
+        "value": " network 10.10.50.0 0.0.0.255 area 0",
+        "newLineNumber": 21
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 16,
+        "newLineNumber": 22
+      },
+      {
+        "type": "unchanged",
+        "value": "ip route 0.0.0.0 0.0.0.0 203.0.113.9",
+        "oldLineNumber": 17,
+        "newLineNumber": 23
+      },
+      {
+        "type": "added",
+        "value": "ip route 10.100.0.0 255.255.0.0 203.0.113.14",
+        "newLineNumber": 24
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 18,
+        "newLineNumber": 25
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 443",
+        "oldLineNumber": 19
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 80",
+        "oldLineNumber": 20
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 deny ip any any log",
+        "oldLineNumber": 21
+      },
+      {
+        "type": "added",
+        "value": "access-list 101 permit tcp 192.168.20.0 0.0.0.255 any eq 443",
+        "newLineNumber": 26
+      },
+      {
+        "type": "added",
+        "value": "access-list 101 permit ip any any",
+        "newLineNumber": 27
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 22,
+        "newLineNumber": 28
+      },
+      {
+        "type": "unchanged",
+        "value": "line vty 0 4",
+        "oldLineNumber": 23,
+        "newLineNumber": 29
+      },
+      {
+        "type": "unchanged",
+        "value": " login local",
+        "oldLineNumber": 24,
+        "newLineNumber": 30
+      },
+      {
+        "type": "removed",
+        "value": " transport input ssh",
+        "oldLineNumber": 25
+      },
+      {
+        "type": "added",
+        "value": " transport input ssh telnet",
+        "newLineNumber": 31
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 26,
+        "newLineNumber": 32
+      },
+      {
+        "type": "removed",
+        "value": "username admin privilege 15 secret OldStrongPassword123",
+        "oldLineNumber": 27
+      },
+      {
+        "type": "added",
+        "value": "username admin privilege 15 secret NewWeakPassword",
+        "newLineNumber": 33
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 28,
+        "newLineNumber": 34
+      },
+      {
+        "type": "removed",
+        "value": "ntp server 192.168.10.20",
+        "oldLineNumber": 29
+      },
+      {
+        "type": "added",
+        "value": "ntp server 198.51.100.50",
+        "newLineNumber": 35
+      },
+      {
+        "type": "unchanged",
+        "value": "logging host 192.168.10.30",
+        "oldLineNumber": 30,
+        "newLineNumber": 36
+      },
+      {
+        "type": "unchanged",
+        "value": "",
+        "oldLineNumber": 31,
+        "newLineNumber": 37
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "The proposed configuration introduces significant security regressions, including the removal of restrictive access control lists, the enablement of insecure management protocols, and the weakening of administrative credentials. These changes expose the network to unauthorized access and potential data exfiltration.",
+      "technicalSummary": "The configuration replaces a restrictive ACL (101) with an 'any-to-any' permit statement, effectively disabling perimeter filtering. It adds a static route to an external gateway (203.0.113.14), enables Telnet for VTY access, and replaces a strong password with a weak one. OSPF routing is expanded to include new subnets 192.168.20.0/24 and 10.10.50.0/24.",
+      "overallRisk": "Critical",
+      "approvalRecommendation": "Reject",
+      "securityImpact": "The removal of the 'deny ip any any log' statement and the addition of 'permit ip any any' creates a massive security hole, allowing unrestricted traffic flow. Enabling Telnet exposes administrative credentials to cleartext interception. Weakening the admin password increases susceptibility to brute-force attacks.",
+      "availabilityImpact": "The change in LAN IP addressing (192.168.10.x to 192.168.20.x) will cause immediate loss of connectivity for all existing LAN-based services and endpoints until they are re-addressed.",
+      "complianceImpact": "Violates PCI-DSS (Requirement 8.2.1 - strong passwords), SOC2 (Access Control and Network Security principles), and general industry best practices regarding the principle of least privilege.",
+      "affectedServices": [
+        "LAN Connectivity",
+        "Management Access",
+        "Perimeter Security",
+        "NTP Synchronization"
+      ],
+      "changes": [
+        {
+          "title": "ACL Policy Weakening",
+          "category": "ACL",
+          "description": "Replaced restrictive ACL 101 with 'permit ip any any'.",
+          "riskLevel": "Critical",
+          "businessImpact": "Complete loss of perimeter security, exposing internal assets to the public internet.",
+          "technicalImpact": "All traffic is permitted, bypassing intended security segmentation.",
+          "recommendedAction": "Revert to explicit permit/deny rules based on business requirements."
+        },
+        {
+          "title": "Insecure Management Protocol",
+          "category": "Authentication",
+          "description": "Added 'telnet' to transport input.",
+          "riskLevel": "High",
+          "businessImpact": "Risk of credential theft via packet sniffing.",
+          "technicalImpact": "Management traffic is no longer encrypted.",
+          "recommendedAction": "Remove 'telnet' and enforce 'transport input ssh'."
+        },
+        {
+          "title": "Credential Weakening",
+          "category": "Authentication",
+          "description": "Changed admin password to a weak string.",
+          "riskLevel": "High",
+          "businessImpact": "Increased risk of unauthorized administrative access.",
+          "technicalImpact": "Reduced entropy for local authentication.",
+          "recommendedAction": "Use a complex, high-entropy password or transition to TACACS+/RADIUS."
+        }
+      ],
+      "reviewerChecklist": [
+        "Verify the business justification for the 'permit ip any any' ACL entry.",
+        "Confirm the necessity of Telnet versus SSH.",
+        "Validate the new LAN subnet migration plan to prevent downtime.",
+        "Ensure the new NTP server is authorized and reachable."
+      ],
+      "questionsForChangeOwner": [
+        "Why is an 'any-to-any' permit required for the production LAN?",
+        "What is the justification for enabling Telnet in a production environment?",
+        "Is there a migration plan for the LAN subnet change to avoid service disruption?"
+      ],
+      "finalDecisionRationale": "The combination of removing security controls (ACLs), enabling insecure protocols (Telnet), and weakening authentication credentials presents an unacceptable risk profile for a production environment."
+    },
+    "checklist": [
+      {
+        "item": "Verify the business justification for the 'permit ip any any' ACL entry.",
+        "checked": false
+      },
+      {
+        "item": "Confirm the necessity of Telnet versus SSH.",
+        "checked": false
+      },
+      {
+        "item": "Validate the new LAN subnet migration plan to prevent downtime.",
+        "checked": false
+      },
+      {
+        "item": "Ensure the new NTP server is authorized and reachable.",
+        "checked": false
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-09T08:49:23.255Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Baseline comparison ran successfully. Identified policy risks, score set at 60 (Critical). Gemini active model validated."
+      }
+    ],
+    "createdAt": "2026-06-09T08:49:23.255Z",
+    "updatedAt": "2026-06-09T08:49:23.255Z"
+  },
+  {
+    "id": "REV-2026-0005",
+    "changeRequestId": "CHG-2026-9041",
+    "deviceType": "Generic",
+    "environment": "Development",
+    "reviewer": "Security Operations Hub",
+    "status": "Pending",
+    "overallRisk": "Critical",
+    "riskScore": 6,
+    "oldConfig": "hostname BRANCH-RTR-01\n!\ninterface GigabitEthernet0/0\n description WAN Link to ISP\n ip address 203.0.113.10 255.255.255.252\n no shutdown\n!\ninterface GigabitEthernet0/1\n description LAN Network\n ip address 192.168.10.1 255.255.255.0\n no shutdown\n!\nrouter ospf 10\n network 192.168.10.0 0.0.0.255 area 0\n network 203.0.113.8 0.0.0.3 area 0\n!\nip route 0.0.0.0 0.0.0.0 203.0.113.9\n!\naccess-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 443\naccess-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 80\naccess-list 101 deny ip any any log\n!\nline vty 0 4\n login local\n transport input ssh\n!\nusername admin privilege 15 secret OldStrongPassword123\n!\nntp server 192.168.10.20\nlogging host 192.168.10.30\n",
+    "newConfig": "hostname BRANCH-RTR-01\n!\ninterface GigabitEthernet0/0\n description WAN Link to ISP\n ip address 203.0.113.10 255.255.255.252\n no shutdown\n!\ninterface GigabitEthernet0/1\n description LAN Network\n ip address 192.168.20.1 255.255.255.0\n no shutdown\n!\ninterface GigabitEthernet0/2\n description Guest WiFi Network\n ip address 10.10.50.1 255.255.255.0\n no shutdown\n!\nrouter ospf 10\n network 192.168.20.0 0.0.0.255 area 0\n network 203.0.113.8 0.0.0.3 area 0\n network 10.10.50.0 0.0.0.255 area 0\n!\nip route 0.0.0.0 0.0.0.0 203.0.113.9\nip route 10.100.0.0 255.255.0.0 203.0.113.14\n!\naccess-list 101 permit tcp 192.168.20.0 0.0.0.255 any eq 443\naccess-list 101 permit ip any any\n!\nline vty 0 4\n login local\n transport input ssh telnet\n!\nusername admin privilege 15 secret NewWeakPassword\n!\nntp server 198.51.100.50\nlogging host 192.168.10.30\n",
+    "diff": [
+      {
+        "type": "unchanged",
+        "value": "hostname BRANCH-RTR-01",
+        "oldLineNumber": 1,
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "unchanged",
+        "value": "interface GigabitEthernet0/0",
+        "oldLineNumber": 3,
+        "newLineNumber": 3
+      },
+      {
+        "type": "unchanged",
+        "value": " description WAN Link to ISP",
+        "oldLineNumber": 4,
+        "newLineNumber": 4
+      },
+      {
+        "type": "unchanged",
+        "value": " ip address 203.0.113.10 255.255.255.252",
+        "oldLineNumber": 5,
+        "newLineNumber": 5
+      },
+      {
+        "type": "unchanged",
+        "value": " no shutdown",
+        "oldLineNumber": 6,
+        "newLineNumber": 6
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 7,
+        "newLineNumber": 7
+      },
+      {
+        "type": "unchanged",
+        "value": "interface GigabitEthernet0/1",
+        "oldLineNumber": 8,
+        "newLineNumber": 8
+      },
+      {
+        "type": "unchanged",
+        "value": " description LAN Network",
+        "oldLineNumber": 9,
+        "newLineNumber": 9
+      },
+      {
+        "type": "removed",
+        "value": " ip address 192.168.10.1 255.255.255.0",
+        "oldLineNumber": 10
+      },
+      {
+        "type": "added",
+        "value": " ip address 192.168.20.1 255.255.255.0",
+        "newLineNumber": 10
+      },
+      {
+        "type": "added",
+        "value": " no shutdown",
+        "newLineNumber": 11
+      },
+      {
+        "type": "added",
+        "value": "!",
+        "newLineNumber": 12
+      },
+      {
+        "type": "added",
+        "value": "interface GigabitEthernet0/2",
+        "newLineNumber": 13
+      },
+      {
+        "type": "added",
+        "value": " description Guest WiFi Network",
+        "newLineNumber": 14
+      },
+      {
+        "type": "added",
+        "value": " ip address 10.10.50.1 255.255.255.0",
+        "newLineNumber": 15
+      },
+      {
+        "type": "unchanged",
+        "value": " no shutdown",
+        "oldLineNumber": 11,
+        "newLineNumber": 16
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 12,
+        "newLineNumber": 17
+      },
+      {
+        "type": "unchanged",
+        "value": "router ospf 10",
+        "oldLineNumber": 13,
+        "newLineNumber": 18
+      },
+      {
+        "type": "removed",
+        "value": " network 192.168.10.0 0.0.0.255 area 0",
+        "oldLineNumber": 14
+      },
+      {
+        "type": "added",
+        "value": " network 192.168.20.0 0.0.0.255 area 0",
+        "newLineNumber": 19
+      },
+      {
+        "type": "unchanged",
+        "value": " network 203.0.113.8 0.0.0.3 area 0",
+        "oldLineNumber": 15,
+        "newLineNumber": 20
+      },
+      {
+        "type": "added",
+        "value": " network 10.10.50.0 0.0.0.255 area 0",
+        "newLineNumber": 21
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 16,
+        "newLineNumber": 22
+      },
+      {
+        "type": "unchanged",
+        "value": "ip route 0.0.0.0 0.0.0.0 203.0.113.9",
+        "oldLineNumber": 17,
+        "newLineNumber": 23
+      },
+      {
+        "type": "added",
+        "value": "ip route 10.100.0.0 255.255.0.0 203.0.113.14",
+        "newLineNumber": 24
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 18,
+        "newLineNumber": 25
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 443",
+        "oldLineNumber": 19
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 permit tcp 192.168.10.0 0.0.0.255 any eq 80",
+        "oldLineNumber": 20
+      },
+      {
+        "type": "removed",
+        "value": "access-list 101 deny ip any any log",
+        "oldLineNumber": 21
+      },
+      {
+        "type": "added",
+        "value": "access-list 101 permit tcp 192.168.20.0 0.0.0.255 any eq 443",
+        "newLineNumber": 26
+      },
+      {
+        "type": "added",
+        "value": "access-list 101 permit ip any any",
+        "newLineNumber": 27
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 22,
+        "newLineNumber": 28
+      },
+      {
+        "type": "unchanged",
+        "value": "line vty 0 4",
+        "oldLineNumber": 23,
+        "newLineNumber": 29
+      },
+      {
+        "type": "unchanged",
+        "value": " login local",
+        "oldLineNumber": 24,
+        "newLineNumber": 30
+      },
+      {
+        "type": "removed",
+        "value": " transport input ssh",
+        "oldLineNumber": 25
+      },
+      {
+        "type": "added",
+        "value": " transport input ssh telnet",
+        "newLineNumber": 31
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 26,
+        "newLineNumber": 32
+      },
+      {
+        "type": "removed",
+        "value": "username admin privilege 15 secret OldStrongPassword123",
+        "oldLineNumber": 27
+      },
+      {
+        "type": "added",
+        "value": "username admin privilege 15 secret NewWeakPassword",
+        "newLineNumber": 33
+      },
+      {
+        "type": "unchanged",
+        "value": "!",
+        "oldLineNumber": 28,
+        "newLineNumber": 34
+      },
+      {
+        "type": "removed",
+        "value": "ntp server 192.168.10.20",
+        "oldLineNumber": 29
+      },
+      {
+        "type": "added",
+        "value": "ntp server 198.51.100.50",
+        "newLineNumber": 35
+      },
+      {
+        "type": "unchanged",
+        "value": "logging host 192.168.10.30",
+        "oldLineNumber": 30,
+        "newLineNumber": 36
+      },
+      {
+        "type": "unchanged",
+        "value": "",
+        "oldLineNumber": 31,
+        "newLineNumber": 37
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "The proposed configuration introduces significant security regressions, including the removal of restrictive access control lists, the enablement of insecure management protocols, and the weakening of administrative credentials. These changes expose the network to unauthorized access and potential data exfiltration.",
+      "technicalSummary": "The configuration replaces a restrictive ACL (101) with a permissive 'permit ip any any' rule, introduces Telnet alongside SSH for VTY access, and adds a static route to an external network (10.100.0.0/16) via an unverified next-hop. Additionally, the administrative password has been downgraded.",
+      "overallRisk": "Critical",
+      "approvalRecommendation": "Reject",
+      "securityImpact": "The removal of the 'deny ip any any log' statement and the addition of 'permit ip any any' effectively disables the firewall functionality for the LAN, allowing unrestricted traffic. Enabling Telnet exposes administrative credentials to cleartext interception.",
+      "availabilityImpact": "The change in LAN IP addressing (192.168.10.1 to 192.168.20.1) will cause immediate loss of connectivity for all existing LAN devices until they are re-addressed. The new static route may cause asymmetric routing or traffic blackholing if the next-hop 203.0.113.14 is not properly configured.",
+      "complianceImpact": "Violates PCI-DSS (Requirement 8.2.1 - strong passwords), SOC2 (Access Control and Network Security principles), and general industry best practices regarding the principle of least privilege.",
+      "affectedServices": [
+        "LAN Connectivity",
+        "Guest WiFi",
+        "Remote Management (SSH/Telnet)",
+        "NTP Synchronization"
+      ],
+      "changes": [
+        {
+          "title": "ACL Permissiveness",
+          "category": "ACL",
+          "description": "Replaced specific permit rules and implicit deny with 'permit ip any any'.",
+          "riskLevel": "Critical",
+          "businessImpact": "Full exposure of internal network to external threats.",
+          "technicalImpact": "Disables stateful inspection and filtering capabilities.",
+          "recommendedAction": "Revert to restrictive ACLs and implement explicit permit rules for required traffic only."
+        },
+        {
+          "title": "Insecure Management Protocol",
+          "category": "Authentication",
+          "description": "Added 'telnet' to 'transport input' on VTY lines.",
+          "riskLevel": "High",
+          "businessImpact": "Risk of credential theft via packet sniffing.",
+          "technicalImpact": "Management traffic is sent in cleartext.",
+          "recommendedAction": "Remove 'telnet' and enforce 'transport input ssh' only."
+        },
+        {
+          "title": "Credential Weakening",
+          "category": "Authentication",
+          "description": "Changed admin password to a weaker secret.",
+          "riskLevel": "High",
+          "businessImpact": "Increased susceptibility to brute-force attacks.",
+          "technicalImpact": "Reduced entropy of administrative credentials.",
+          "recommendedAction": "Use a complex, randomly generated password stored in a secure vault."
+        }
+      ],
+      "reviewerChecklist": [
+        "Verify that the 'permit ip any any' ACL is replaced with specific source/destination requirements.",
+        "Confirm that Telnet is disabled and only SSH is permitted for remote management.",
+        "Validate the necessity of the new static route to 10.100.0.0/16 and ensure the next-hop is trusted.",
+        "Ensure the administrative password meets organizational complexity standards."
+      ],
+      "questionsForChangeOwner": [
+        "Why was the restrictive ACL replaced with a permissive 'permit ip any any' rule?",
+        "What is the business justification for enabling Telnet in a production environment?",
+        "Can you provide the security justification for the new static route to 10.100.0.0/16?"
+      ],
+      "finalDecisionRationale": "The change introduces multiple critical security vulnerabilities that violate basic network hardening standards. The combination of unrestricted traffic flow and insecure management protocols poses an unacceptable risk to the enterprise network."
+    },
+    "checklist": [
+      {
+        "item": "Verify that the 'permit ip any any' ACL is replaced with specific source/destination requirements.",
+        "checked": false
+      },
+      {
+        "item": "Confirm that Telnet is disabled and only SSH is permitted for remote management.",
+        "checked": false
+      },
+      {
+        "item": "Validate the necessity of the new static route to 10.100.0.0/16 and ensure the next-hop is trusted.",
+        "checked": false
+      },
+      {
+        "item": "Ensure the administrative password meets organizational complexity standards.",
+        "checked": false
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-09T09:07:44.964Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Baseline comparison ran successfully. Identified policy risks, score set at 60 (Critical). Gemini active model validated."
+      }
+    ],
+    "createdAt": "2026-06-09T09:07:44.964Z",
+    "updatedAt": "2026-06-09T09:07:44.964Z"
+  },
+  {
+    "id": "REV-2026-0006",
+    "changeRequestId": "CHG-2026-9041",
+    "deviceType": "Palo Alto",
+    "environment": "Development",
+    "reviewer": "Security Operations Hub",
+    "status": "Pending",
+    "overallRisk": "Critical",
+    "riskScore": 0,
+    "oldConfig": "# Palo Alto Firewall Security Rule Baseline\nset rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"\nset rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public\nset rulebase security rules \"Trusted DNS Queries\" source 10.244.5.10\nset rulebase security rules \"Trusted DNS Queries\" destination 8.8.8.8\nset rulebase security rules \"Trusted DNS Queries\" service service-dns\nset rulebase security rules \"Trusted DNS Queries\" action allow",
+    "newConfig": "# Palo Alto Firewall Security Rule Updates\nset rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"\nset rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public\nset rulebase security rules \"Trusted DNS Queries\" source any\nset rulebase security rules \"Trusted DNS Queries\" destination any\nset rulebase security rules \"Trusted DNS Queries\" service any\nset rulebase security rules \"Trusted DNS Queries\" action allow",
+    "diff": [
+      {
+        "type": "removed",
+        "value": "# Palo Alto Firewall Security Rule Baseline",
+        "oldLineNumber": 1
+      },
+      {
+        "type": "added",
+        "value": "# Palo Alto Firewall Security Rule Updates",
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public",
+        "oldLineNumber": 3,
+        "newLineNumber": 3
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" source 10.244.5.10",
+        "oldLineNumber": 4
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" destination 8.8.8.8",
+        "oldLineNumber": 5
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" service service-dns",
+        "oldLineNumber": 6
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" source any",
+        "newLineNumber": 4
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" destination any",
+        "newLineNumber": 5
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" service any",
+        "newLineNumber": 6
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" action allow",
+        "oldLineNumber": 7,
+        "newLineNumber": 7
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "The proposed change transforms a highly restrictive DNS-specific security rule into an 'any-any' permit rule. This effectively disables the firewall's ability to filter traffic for this rule, creating a significant security hole that allows unrestricted traffic flow across the network.",
+      "technicalSummary": "The configuration replaces specific source (10.244.5.10), destination (8.8.8.8), and service (service-dns) constraints with 'any' wildcards. This effectively converts a granular security policy into an open permit-all rule for the 'Trusted DNS Queries' policy object.",
+      "overallRisk": "Critical",
+      "approvalRecommendation": "Reject",
+      "securityImpact": "The change removes all security controls for this rule, allowing any internal host to communicate with any external destination over any port/protocol. This bypasses egress filtering and facilitates potential data exfiltration or command-and-control (C2) communication.",
+      "availabilityImpact": "None expected, as the change broadens access rather than restricting it.",
+      "complianceImpact": "Violates fundamental principles of Least Privilege and Zero Trust architecture required by SOC2 and PCI-DSS standards.",
+      "affectedServices": [
+        "Internal-Core to External-Public traffic",
+        "DNS resolution",
+        "General egress traffic"
+      ],
+      "changes": [
+        {
+          "title": "Broadening of Security Rule Scope",
+          "category": "ACL",
+          "description": "Replaced specific source, destination, and service parameters with 'any' in the 'Trusted DNS Queries' security rule.",
+          "riskLevel": "Critical",
+          "businessImpact": "High risk of unauthorized data exfiltration and exposure to malicious external traffic.",
+          "technicalImpact": "Complete loss of traffic inspection and filtering for the affected rule path.",
+          "recommendedAction": "Revert to original specific IP and service constraints; use address objects for scalability."
+        }
+      ],
+      "reviewerChecklist": [
+        "Verify if the intent was to allow additional DNS servers or to open full internet access.",
+        "Confirm that the 'any' source/destination/service configuration is not a result of a copy-paste error.",
+        "Check if an App-ID or Service Group can be used instead of 'any' if broader access is required."
+      ],
+      "questionsForChangeOwner": [
+        "What is the business justification for removing all source, destination, and service restrictions from this rule?",
+        "Are there specific applications requiring this 'any-any' access that cannot be defined by specific FQDNs or IP ranges?",
+        "Has a security impact assessment been performed for this change?"
+      ],
+      "finalDecisionRationale": "The change introduces an 'any-any' permit rule, which is a severe security misconfiguration that violates the principle of least privilege and exposes the network to significant risk."
+    },
+    "checklist": [
+      {
+        "item": "Verify if the intent was to allow additional DNS servers or to open full internet access.",
+        "checked": false
+      },
+      {
+        "item": "Confirm that the 'any' source/destination/service configuration is not a result of a copy-paste error.",
+        "checked": false
+      },
+      {
+        "item": "Check if an App-ID or Service Group can be used instead of 'any' if broader access is required.",
+        "checked": false
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-09T09:10:21.568Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Baseline comparison ran successfully. Identified policy risks, score set at 0 (Critical). Gemini active model validated."
+      }
+    ],
+    "createdAt": "2026-06-09T09:10:21.568Z",
+    "updatedAt": "2026-06-09T09:10:21.568Z"
+  },
+  {
+    "id": "REV-2026-0007",
+    "changeRequestId": "CHG-2026-9041",
+    "deviceType": "Palo Alto",
+    "environment": "Production",
+    "reviewer": "Security Operations Hub",
+    "status": "Pending",
+    "overallRisk": "Critical",
+    "riskScore": 0,
+    "oldConfig": "# Palo Alto Firewall Security Rule Baseline\nset rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"\nset rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public\nset rulebase security rules \"Trusted DNS Queries\" source 10.244.5.10\nset rulebase security rules \"Trusted DNS Queries\" destination 8.8.8.8\nset rulebase security rules \"Trusted DNS Queries\" service service-dns\nset rulebase security rules \"Trusted DNS Queries\" action allow",
+    "newConfig": "# Palo Alto Firewall Security Rule Updates\nset rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"\nset rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public\nset rulebase security rules \"Trusted DNS Queries\" source any\nset rulebase security rules \"Trusted DNS Queries\" destination any\nset rulebase security rules \"Trusted DNS Queries\" service any\nset rulebase security rules \"Trusted DNS Queries\" action allow",
+    "diff": [
+      {
+        "type": "removed",
+        "value": "# Palo Alto Firewall Security Rule Baseline",
+        "oldLineNumber": 1
+      },
+      {
+        "type": "added",
+        "value": "# Palo Alto Firewall Security Rule Updates",
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public",
+        "oldLineNumber": 3,
+        "newLineNumber": 3
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" source 10.244.5.10",
+        "oldLineNumber": 4
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" destination 8.8.8.8",
+        "oldLineNumber": 5
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" service service-dns",
+        "oldLineNumber": 6
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" source any",
+        "newLineNumber": 4
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" destination any",
+        "newLineNumber": 5
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" service any",
+        "newLineNumber": 6
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" action allow",
+        "oldLineNumber": 7,
+        "newLineNumber": 7
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "The proposed change transforms a highly restrictive DNS security rule into an 'any-any' permit rule. This effectively disables the firewall's ability to inspect or restrict DNS traffic, creating a significant security hole that allows any internal host to communicate with any external destination over any port.",
+      "technicalSummary": "The configuration replaces specific source (10.244.5.10), destination (8.8.8.8), and service (service-dns) constraints with 'any' wildcards. This effectively converts a targeted security policy into an open permit-all rule for the 'Trusted DNS Queries' rule object.",
+      "overallRisk": "Critical",
+      "approvalRecommendation": "Reject",
+      "securityImpact": "The change removes all egress filtering for the rule, enabling potential DNS tunneling, command-and-control (C2) traffic, and data exfiltration via non-DNS ports. It bypasses the principle of least privilege and exposes the network to unauthorized outbound connections.",
+      "availabilityImpact": "Minimal impact on availability, though it may inadvertently allow unauthorized traffic that could lead to network congestion or security-related service disruptions.",
+      "complianceImpact": "Violates PCI-DSS Requirement 1.2.1 (restrict traffic to that which is necessary) and SOC2 Common Criteria (Logical Access/Network Security).",
+      "affectedServices": [
+        "DNS",
+        "General Outbound Traffic"
+      ],
+      "changes": [
+        {
+          "title": "Broadening of Security Rule Constraints",
+          "category": "ACL",
+          "description": "Replaced specific source, destination, and service parameters with 'any' in the 'Trusted DNS Queries' security rule.",
+          "riskLevel": "Critical",
+          "businessImpact": "High risk of data exfiltration and malware communication due to lack of egress control.",
+          "technicalImpact": "The firewall rule no longer performs stateful inspection or filtering for DNS traffic, effectively acting as a pass-through for all traffic matching this rule name.",
+          "recommendedAction": "Revert to specific source/destination/service constraints or implement an FQDN-based object group if dynamic resolution is required."
+        }
+      ],
+      "reviewerChecklist": [
+        "Verify if the business requirement necessitates 'any' access or if specific subnets/IPs can be defined.",
+        "Check if App-ID or Service-Object filtering is missing, which would allow non-DNS traffic over port 53.",
+        "Confirm that the change owner has performed a risk assessment regarding potential C2 traffic bypass.",
+        "Validate that no other security rules are shadowed by this overly permissive rule."
+      ],
+      "questionsForChangeOwner": [
+        "What is the specific business justification for removing source and destination restrictions?",
+        "Have you considered using an FQDN object or a dynamic address group instead of 'any' to accommodate the requirement?",
+        "How do you plan to mitigate the risk of non-DNS traffic utilizing this rule?"
+      ],
+      "finalDecisionRationale": "The change introduces an 'any-any' permit rule, which is a fundamental violation of network security best practices. It removes all granular control over egress traffic, creating an unacceptable security posture for a production environment."
+    },
+    "checklist": [
+      {
+        "item": "Verify if the business requirement necessitates 'any' access or if specific subnets/IPs can be defined.",
+        "checked": false
+      },
+      {
+        "item": "Check if App-ID or Service-Object filtering is missing, which would allow non-DNS traffic over port 53.",
+        "checked": false
+      },
+      {
+        "item": "Confirm that the change owner has performed a risk assessment regarding potential C2 traffic bypass.",
+        "checked": false
+      },
+      {
+        "item": "Validate that no other security rules are shadowed by this overly permissive rule.",
+        "checked": false
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-09T09:13:19.087Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Baseline comparison ran successfully. Identified policy risks, score set at 0 (Critical). Gemini active model validated."
+      }
+    ],
+    "createdAt": "2026-06-09T09:13:19.087Z",
+    "updatedAt": "2026-06-09T09:13:19.087Z"
+  },
+  {
+    "id": "REV-2026-0008",
+    "changeRequestId": "CHG-2026-9041",
+    "deviceType": "Palo Alto",
+    "environment": "Production",
+    "reviewer": "NetGuard Sentinel Global Corp",
+    "status": "Rejected",
+    "overallRisk": "Critical",
+    "riskScore": 0,
+    "oldConfig": "# Palo Alto Firewall Security Rule Baseline\nset rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"\nset rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public\nset rulebase security rules \"Trusted DNS Queries\" source 10.244.5.10\nset rulebase security rules \"Trusted DNS Queries\" destination 8.8.8.8\nset rulebase security rules \"Trusted DNS Queries\" service service-dns\nset rulebase security rules \"Trusted DNS Queries\" action allow",
+    "newConfig": "# Palo Alto Firewall Security Rule Updates\nset rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"\nset rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public\nset rulebase security rules \"Trusted DNS Queries\" source any\nset rulebase security rules \"Trusted DNS Queries\" destination any\nset rulebase security rules \"Trusted DNS Queries\" service any\nset rulebase security rules \"Trusted DNS Queries\" action allow",
+    "diff": [
+      {
+        "type": "removed",
+        "value": "# Palo Alto Firewall Security Rule Baseline",
+        "oldLineNumber": 1
+      },
+      {
+        "type": "added",
+        "value": "# Palo Alto Firewall Security Rule Updates",
+        "newLineNumber": 1
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" description \"Allow central corporate name lookup servers\"",
+        "oldLineNumber": 2,
+        "newLineNumber": 2
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" from Internal-Core to External-Public",
+        "oldLineNumber": 3,
+        "newLineNumber": 3
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" source 10.244.5.10",
+        "oldLineNumber": 4
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" destination 8.8.8.8",
+        "oldLineNumber": 5
+      },
+      {
+        "type": "removed",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" service service-dns",
+        "oldLineNumber": 6
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" source any",
+        "newLineNumber": 4
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" destination any",
+        "newLineNumber": 5
+      },
+      {
+        "type": "added",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" service any",
+        "newLineNumber": 6
+      },
+      {
+        "type": "unchanged",
+        "value": "set rulebase security rules \"Trusted DNS Queries\" action allow",
+        "oldLineNumber": 7,
+        "newLineNumber": 7
+      }
+    ],
+    "analysis": {
+      "executiveSummary": "The proposed change transforms a highly restrictive DNS security rule into an 'any-any' permit rule. This effectively disables the firewall's ability to inspect or restrict DNS traffic, creating a significant security hole that allows any internal host to communicate with any external destination over any port.",
+      "technicalSummary": "The configuration replaces specific source (10.244.5.10), destination (8.8.8.8), and service (service-dns) constraints with 'any' wildcards. This effectively converts a targeted security policy into an open transit rule, bypassing all L4 inspection and source/destination validation for the 'Trusted DNS Queries' rule object.",
+      "overallRisk": "Critical",
+      "approvalRecommendation": "Reject",
+      "securityImpact": "The change removes all perimeter security controls for the affected rule. It enables potential DNS tunneling, command-and-control (C2) traffic masquerading as DNS, and allows internal hosts to bypass corporate DNS infrastructure, facilitating data exfiltration and malware communication.",
+      "availabilityImpact": "Minimal impact on availability, though it may lead to increased traffic volume and potential resource exhaustion on the firewall due to the removal of traffic constraints.",
+      "complianceImpact": "Violates core principles of Least Privilege and Zero Trust architecture required by SOC2 and PCI-DSS. Failure to restrict DNS traffic to authorized resolvers is a common audit finding.",
+      "affectedServices": [
+        "DNS Resolution",
+        "Internal-Core Network Security",
+        "External-Public Traffic Filtering"
+      ],
+      "changes": [
+        {
+          "title": "Removal of DNS Security Constraints",
+          "category": "ACL",
+          "description": "Replaced specific source, destination, and service parameters with 'any' in the 'Trusted DNS Queries' security rule.",
+          "riskLevel": "Critical",
+          "businessImpact": "High risk of security breach, data exfiltration, and non-compliance with regulatory standards.",
+          "technicalImpact": "Eliminates L4 traffic filtering, allowing arbitrary traffic to traverse the firewall under the guise of the DNS rule.",
+          "recommendedAction": "Revert to original configuration or implement a specific Address Object Group for authorized DNS servers."
+        }
+      ],
+      "reviewerChecklist": [
+        "Verify the business requirement for changing a specific DNS rule to an 'any-any' policy.",
+        "Confirm if the intent was to allow additional DNS servers rather than removing all restrictions.",
+        "Check if an Address Object Group can be used instead of 'any' to maintain security posture.",
+        "Audit the rule for potential impact on existing DNS sinkholing or security profiles."
+      ],
+      "questionsForChangeOwner": [
+        "What is the specific business justification for removing source and destination restrictions on DNS traffic?",
+        "Are there alternative methods to achieve the desired connectivity without compromising the security of the DNS policy?",
+        "Has a security impact assessment been conducted regarding the potential for DNS tunneling or C2 traffic?"
+      ],
+      "finalDecisionRationale": "The change introduces an unacceptable security risk by removing all granular controls on a security rule. The transition from a specific, hardened rule to an 'any-any' permit rule is a violation of standard security engineering practices and exposes the network to significant threat vectors."
+    },
+    "checklist": [
+      {
+        "item": "Verify the business requirement for changing a specific DNS rule to an 'any-any' policy.",
+        "checked": false
+      },
+      {
+        "item": "Confirm if the intent was to allow additional DNS servers rather than removing all restrictions.",
+        "checked": false
+      },
+      {
+        "item": "Check if an Address Object Group can be used instead of 'any' to maintain security posture.",
+        "checked": false
+      },
+      {
+        "item": "Audit the rule for potential impact on existing DNS sinkholing or security profiles.",
+        "checked": false
+      }
+    ],
+    "auditTrail": [
+      {
+        "timestamp": "2026-06-09T09:22:16.320Z",
+        "action": "ANALYSIS_COMPLETED",
+        "details": "Baseline comparison ran successfully. Identified policy risks, score set at 0 (Critical). Gemini active model validated."
+      },
+      {
+        "timestamp": "2026-06-09T09:22:42.852Z",
+        "action": "STATUS_CHANGED",
+        "details": "Review status changed from \"Pending\" to \"Rejected\" by NetGuard Sentinel Global Corp."
+      }
+    ],
+    "createdAt": "2026-06-09T09:22:16.320Z",
+    "updatedAt": "2026-06-09T09:22:42.852Z"
+  }
+]
